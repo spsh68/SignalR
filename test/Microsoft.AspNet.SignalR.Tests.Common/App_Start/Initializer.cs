@@ -3,7 +3,6 @@
 
 using System;
 using System.Configuration;
-using System.Data.Odbc;
 using System.Diagnostics;
 using System.IO;
 using System.Security.Claims;
@@ -11,7 +10,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Routing;
-using Microsoft.AspNet.SignalR.Configuration;
 using Microsoft.AspNet.SignalR.Infrastructure;
 using Microsoft.AspNet.SignalR.StressServer.Connections;
 using Microsoft.AspNet.SignalR.Tests.Common;
@@ -108,7 +106,7 @@ namespace Microsoft.AspNet.SignalR.Tests.Common
             ConfigureRoutes(app, GlobalHost.DependencyResolver);
         }
 
-        public static void ConfigureRoutes(IAppBuilder app, IDependencyResolver resolver)
+        public static void ConfigureRoutes(IAppBuilder app, IDependencyResolver resolver, string azureSignalRConnectionString = null)
         {
             var hubConfig = new HubConfiguration
             {
@@ -116,7 +114,17 @@ namespace Microsoft.AspNet.SignalR.Tests.Common
                 EnableDetailedErrors = true
             };
 
-            app.MapSignalR(hubConfig);
+            if (string.IsNullOrEmpty(azureSignalRConnectionString))
+            {
+                app.MapSignalR(hubConfig);
+            }
+            else
+            {
+                app.Map("/signalr", subapp =>
+                {
+                    subapp.RunAzureSignalR(typeof(Initializer).FullName, azureSignalRConnectionString, hubConfig);
+                });
+            }
 
             app.MapSignalR("/signalr2/test", new HubConfiguration()
             {

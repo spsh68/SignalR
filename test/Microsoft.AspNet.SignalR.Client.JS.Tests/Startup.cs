@@ -3,6 +3,7 @@
 
 using System;
 using System.IO;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web.Cors;
 using Microsoft.AspNet.SignalR.Tests.Common;
@@ -17,6 +18,8 @@ namespace Microsoft.AspNet.SignalR.Client.JS.Tests
 {
     public class Startup
     {
+        // Super hacky settings!
+        public static string AzureSignalRConnectionString = null;
         public void Configuration(IAppBuilder app)
         {
             var corsPolicy = new CorsPolicy()
@@ -27,6 +30,20 @@ namespace Microsoft.AspNet.SignalR.Client.JS.Tests
                 SupportsCredentials = true,
             };
 
+            // Work around https://github.com/Azure/azure-signalr/issues/203
+            app.Use((context, next) =>
+            {
+                context.Request.User = new ClaimsPrincipal(
+                    new ClaimsIdentity(
+                        new Claim[]
+                        {
+                            new Claim(ClaimTypes.Name, "anonymous")
+                        }));
+                return next();
+            });
+
+            app.UseErrorPage();
+
             // Enable CORS so Karma works
             app.UseCors(new CorsOptions()
             {
@@ -36,7 +53,7 @@ namespace Microsoft.AspNet.SignalR.Client.JS.Tests
                 }
             });
 
-            Initializer.ConfigureRoutes(app, GlobalHost.DependencyResolver);
+            Initializer.ConfigureRoutes(app, GlobalHost.DependencyResolver, AzureSignalRConnectionString);
 
             app.Use((context, next) =>
             {

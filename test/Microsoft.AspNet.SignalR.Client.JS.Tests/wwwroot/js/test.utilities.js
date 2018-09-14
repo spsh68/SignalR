@@ -1,4 +1,4 @@
-﻿var testUtilities;
+var testUtilities;
 
 // Clear session storage so QUnit does not try to re-run failed tests first.
 window.sessionStorage.clear();
@@ -78,7 +78,7 @@ window.sessionStorage.clear();
                         executeWithArgs(d, fn);
                     });
                     break;
-                
+
                 default:
                     fn(data);
                     break;
@@ -101,8 +101,7 @@ window.sessionStorage.clear();
             return defaultTestTimeout;
         })(),
         createHubConnection: function (end, assert, testName, url, wrapStart) {
-            var connection,
-                qs = (testName ? "test=" + window.encodeURIComponent(testName) : "");
+            var connection;
 
             wrapStart = typeof wrapStart === "undefined" ? true : false;
 
@@ -111,7 +110,7 @@ window.sessionStorage.clear();
                 url = window.document.testUrl + url;
             }
 
-            connection = $.hubConnection(url, { useDefaultPath: false, qs: qs })
+            connection = $.hubConnection(url, { useDefaultPath: false })
             connection.logging = true;
 
             if (wrapStart) {
