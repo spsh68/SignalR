@@ -27,6 +27,14 @@ window.sessionStorage.clear();
     }
 
     testUtilities = {
+        // Define a module that should be skipped on Azure SignalR
+        nonAzureModule: function (name) {
+            if (window._server.azureSignalR) {
+                QUnit.module.skip(name);
+            } else {
+                QUnit.module(name);
+            }
+        },
         transports: {
             longPolling: {
                 enabled: true
@@ -101,7 +109,8 @@ window.sessionStorage.clear();
             return defaultTestTimeout;
         })(),
         createHubConnection: function (end, assert, testName, url, wrapStart) {
-            var connection;
+            var connection,
+                qs = (testName ? "test=" + window.encodeURIComponent(testName) : "");
 
             wrapStart = typeof wrapStart === "undefined" ? true : false;
 
@@ -110,7 +119,7 @@ window.sessionStorage.clear();
                 url = window.document.testUrl + url;
             }
 
-            connection = $.hubConnection(url, { useDefaultPath: false })
+            connection = $.hubConnection(url, { useDefaultPath: false, qs: qs })
             connection.logging = true;
 
             if (wrapStart) {

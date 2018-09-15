@@ -37,7 +37,7 @@ namespace Microsoft.AspNet.SignalR.Client.JS.Tests
                     new ClaimsIdentity(
                         new Claim[]
                         {
-                            new Claim(ClaimTypes.Name, "anonymous")
+                            new Claim(ClaimTypes.Name, string.Empty)
                         }));
                 return next();
             });
@@ -65,24 +65,25 @@ namespace Microsoft.AspNet.SignalR.Client.JS.Tests
                 return next();
             });
 
-            // Valid redirect chain
-            // Overload detection doesn't like it when we use this as an extension method
-            AppBuilderUseExtensions.Use(app, CreateRedirector("/redirect", "/redirect2"));
-            AppBuilderUseExtensions.Use(app, CreateRedirector("/redirect2", "/redirect3"));
-            AppBuilderUseExtensions.Use(app, CreateRedirector("/redirect3", "/redirect4"));
-            AppBuilderUseExtensions.Use(app, CreateRedirector("/redirect4", "/signalr"));
-
-            // Looping redirect chain
-            AppBuilderUseExtensions.Use(app, CreateRedirector("/redirect-loop", "/redirect-loop2"));
-            AppBuilderUseExtensions.Use(app, CreateRedirector("/redirect-loop2", "/redirect-loop"));
-
-            // Wrong protocol version
-            AppBuilderUseExtensions.Use(app, CreateRedirector("/redirect-old-proto", "/signalr", protocolVersion: "1.5"));
+            app.Use(async (context, next) =>
+            {
+                if (context.Request.Path.StartsWithSegments(new PathString("/js/server-info.js")))
+                {
+                    // Inject server settings in to the javascript
+                    context.Response.StatusCode = 200;
+                    context.Response.ContentType = "application/javascript";
+                    await context.Response.WriteAsync($"window._server = {{ azureSignalR: {(string.IsNullOrEmpty(AzureSignalRConnectionString) ? "false" : "true")} }}");
+                }
+                else
+                {
+                    await next();
+                }
+            });
 
             app.UseFileServer(new FileServerOptions()
             {
                 EnableDefaultFiles = true,
-                FileSystem = new PhysicalFileSystem(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot"))
+                FileSystem = new PhysicalFileSystem(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")),
             });
         }
 
