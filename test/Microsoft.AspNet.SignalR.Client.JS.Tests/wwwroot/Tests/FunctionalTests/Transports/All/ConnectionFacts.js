@@ -12,7 +12,7 @@ var buildStatusCodeConnection = function (alterWhen, statusCode, end, assert, te
     return connection;
 };
 
-testUtilities.nonAzureModule("Connection Functional Tests");
+testUtilities.skipOnAzureModule("Connection Functional Tests");
 
 testUtilities.runWithAllTransports(function (transport) {
 
@@ -552,7 +552,7 @@ testUtilities.runWithAllTransports(function (transport) {
 
 });
 
-testUtilities.nonAzureModule("Connection Functional Tests", !window.document.commandLineTest);
+testUtilities.skipOnAzureModule("Connection Functional Tests", !window.document.commandLineTest);
 
 // Replacing window.onerror will not capture uncaught errors originating from inside an iframe
 testUtilities.runWithTransports(["longPolling", "serverSentEvents", "webSockets"], function (transport) {

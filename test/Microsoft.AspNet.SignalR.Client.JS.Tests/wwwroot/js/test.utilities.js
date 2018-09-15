@@ -28,7 +28,7 @@ window.sessionStorage.clear();
 
     testUtilities = {
         // Define a module that should be skipped on Azure SignalR
-        nonAzureModule: function (name) {
+        skipOnAzureModule: function (name) {
             if (window._server.azureSignalR) {
                 QUnit.module.skip(name);
             } else {

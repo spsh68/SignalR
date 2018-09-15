@@ -1,7 +1,7 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-testUtilities.nonAzureModule("Fallback Functional Tests");
+testUtilities.skipOnAzureModule("Fallback Functional Tests");
 
 QUnit.asyncTimeoutTest("Default transports fall back and connect.", testUtilities.defaultTestTimeout, function (end, assert, testName) {
     var connection = testUtilities.createHubConnection(end, assert, testName);
@@ -116,7 +116,7 @@ QUnit.asyncTimeoutTest("Client does not fall back if the start request hangs.", 
     };
 });
 
-testUtilities.nonAzureModule("Fallback Functional Tests", testUtilities.transports.webSockets.enabled);
+testUtilities.skipOnAzureModule("Fallback Functional Tests", testUtilities.transports.webSockets.enabled);
 
 QUnit.asyncTimeoutTest("WebSockets fall back to next transport.", testUtilities.defaultTestTimeout, function (end, assert, testName) {
     var connection = testUtilities.createHubConnection(end, assert, testName);
@@ -136,7 +136,7 @@ QUnit.asyncTimeoutTest("WebSockets fall back to next transport.", testUtilities.
     };
 });
 
-testUtilities.nonAzureModule("Fallback Functional Tests", testUtilities.transports.webSockets.enabled && $.signalR._.ieVersion >= 10);
+testUtilities.skipOnAzureModule("Fallback Functional Tests", testUtilities.transports.webSockets.enabled && $.signalR._.ieVersion >= 10);
 
 QUnit.asyncTimeoutTest("WebSockets fall back to next transport when connection limit exceeded.", testUtilities.defaultTestTimeout * 3, function (end, assert, testName) {
     var connections = [],
@@ -217,7 +217,7 @@ QUnit.asyncTimeoutTest("OnConnected fires once when WebSockets falls back", test
     };
 });
 
-testUtilities.nonAzureModule("Fallback Functional Tests", !window.document.commandLineTest);
+testUtilities.skipOnAzureModule("Fallback Functional Tests", !window.document.commandLineTest);
 
 // 1 test timeout per transport
 QUnit.asyncTimeoutTest("Connection times out when initialize not received.", testUtilities.defaultTestTimeout * 4, function (end, assert, testName) {

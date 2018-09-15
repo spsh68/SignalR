@@ -2,7 +2,7 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 // Doesn't make sense to run these against Azure SignalR, they are already doing redirect responses!
-testUtilities.nonAzureModule("Redirect Functional Tests");
+testUtilities.skipOnAzureModule("Redirect Functional Tests");
 
 QUnit.asyncTimeoutTest("Can connect to endpoint which produces a redirect response", testUtilities.defaultTestTimeout, function (end, assert, testName) {
     var connection = testUtilities.createHubConnection(end, assert, testName, "/redirect"),

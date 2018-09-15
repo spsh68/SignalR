@@ -18,6 +18,7 @@ using Microsoft.AspNet.SignalR.Tests.Common.Handlers;
 using Microsoft.Owin;
 using Microsoft.Owin.Cors;
 using Microsoft.Owin.Security.Cookies;
+using Newtonsoft.Json;
 using Owin;
 
 [assembly: PreApplicationStartMethod(typeof(Initializer), "Start")]

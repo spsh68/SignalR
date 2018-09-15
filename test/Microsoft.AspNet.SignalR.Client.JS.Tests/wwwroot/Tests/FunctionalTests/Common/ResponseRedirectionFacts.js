@@ -11,7 +11,7 @@ var buildRedirectConnection = function (redirectWhen, end, assert, testName, wra
     return connection;
 };
 
-testUtilities.nonAzureModule("Response redirection Functional Tests");
+testUtilities.skipOnAzureModule("Response redirection Functional Tests");
 
 QUnit.asyncTimeoutTest("Transport connect fails on response redirection with error message.", testUtilities.defaultTestTimeout, function (end, assert, testName) {
     var connection = buildRedirectConnection("negotiate", end, assert, testName, false);
