@@ -43,9 +43,9 @@ namespace Microsoft.AspNet.SignalR.FunctionalTests.Server.Hubs
                         progress => Assert.True(progressUpdates.Writer.TryWrite(progress), "Channel should be unbounded!"),
                         jobName);
 
-                    // Give up after 30 seconds
+                    // Give up after 2 minutes
                     var cts = new CancellationTokenSource();
-                    cts.CancelAfter(TimeSpan.FromSeconds(30));
+                    cts.CancelAfter(TimeSpan.FromMinutes(2));
 
                     var updatesSeen = 0;
                     try
