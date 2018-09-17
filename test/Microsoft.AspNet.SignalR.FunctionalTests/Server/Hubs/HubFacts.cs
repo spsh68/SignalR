@@ -967,7 +967,8 @@ namespace Microsoft.AspNet.SignalR.Tests
                                                "UnsupportedOverload(x:String):Void\n" +
                                                "UnsupportedOverload(x:Int32):Void";
 
-                    TestUtilities.AssertAggregateException<InvalidOperationException>(() => hub.InvokeWithTimeout("UnsupportedOverload", 13177), expectedErrorMessage);
+                    var ex = await Assert.ThrowsAsync<InvalidOperationException>(() => hub.Invoke("UnsupportedOverload", 13177).OrTimeout());
+                    Assert.Equal(ex.Message, expectedErrorMessage);
                 }
             }
         }
