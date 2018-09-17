@@ -2,20 +2,15 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
-using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNet.SignalR.Client;
-using Microsoft.AspNet.SignalR.Client.Hubs;
 using Microsoft.AspNet.SignalR.Client.Transports;
-using Microsoft.AspNet.SignalR.FunctionalTests;
-using Microsoft.AspNet.SignalR.Infrastructure;
 using Microsoft.AspNet.SignalR.Tests.Common;
 using Microsoft.AspNet.SignalR.Tests.Common.Infrastructure;
 using Microsoft.AspNet.SignalR.Tests.Infrastructure;
 using Moq;
 using Xunit;
-using Xunit.Extensions;
 
 namespace Microsoft.AspNet.SignalR.Tests
 {
@@ -36,9 +31,9 @@ namespace Microsoft.AspNet.SignalR.Tests
             {
                 host.Initialize(transportConnectTimeout: 1, messageBusType: messageBusType);
 
-                HubConnection hubConnection = CreateHubConnection(host, "/no-init");
+                var hubConnection = CreateHubConnection(host, "/no-init");
 
-                IHubProxy proxy = hubConnection.CreateHubProxy("DelayedOnConnectedHub");
+                var proxy = hubConnection.CreateHubProxy("DelayedOnConnectedHub");
 
                 using (hubConnection)
                 {
@@ -80,8 +75,8 @@ namespace Microsoft.AspNet.SignalR.Tests
             {
                 host.Initialize();
 
-                HubConnection hubConnection = CreateHubConnection(host);
-                IHubProxy proxy = hubConnection.CreateHubProxy("EchoHub");
+                var hubConnection = CreateHubConnection(host);
+                var proxy = hubConnection.CreateHubProxy("EchoHub");
 
                 var transport = new Mock<WebSocketTransport>() { CallBase = true };
                 transport.Setup(m => m.PerformConnect()).Returns(taskReturn());
@@ -105,8 +100,8 @@ namespace Microsoft.AspNet.SignalR.Tests
             {
                 host.Initialize(transportConnectTimeout: 1, messageBusType: messageBusType);
 
-                HubConnection hubConnection = CreateHubConnection(host, "/no-init");
-                IHubProxy proxy = hubConnection.CreateHubProxy("DelayedOnConnectedHub");
+                var hubConnection = CreateHubConnection(host, "/no-init");
+                var proxy = hubConnection.CreateHubProxy("DelayedOnConnectedHub");
 
                 using (hubConnection)
                 {
@@ -144,9 +139,9 @@ namespace Microsoft.AspNet.SignalR.Tests
             {
                 host.Initialize(messageBusType: messageBusType);
 
-                HubConnection hubConnection = CreateHubConnection(host);
+                var hubConnection = CreateHubConnection(host);
                 // Does nothing on OnConnected so we shouldn't get any user generated messages
-                IHubProxy proxy = hubConnection.CreateHubProxy("EchoHub");
+                var proxy = hubConnection.CreateHubProxy("EchoHub");
 
                 using (hubConnection)
                 {
@@ -202,7 +197,7 @@ namespace Microsoft.AspNet.SignalR.Tests
 
                         wh.Set();
                     });
-                    
+
                     hubConnection.Start(host.Transport).Wait();
 
                     // The calls should be complete once the start task returns
@@ -234,9 +229,9 @@ namespace Microsoft.AspNet.SignalR.Tests
             {
                 host.Initialize(messageBusType: messageBusType);
 
-                HubConnection hubConnection = CreateHubConnection(host);
-                IHubProxy proxy = hubConnection.CreateHubProxy("GroupJoiningHub");
-                int pingCount = 0;
+                var hubConnection = CreateHubConnection(host);
+                var proxy = hubConnection.CreateHubProxy("GroupJoiningHub");
+                var pingCount = 0;
 
                 using (hubConnection)
                 {
@@ -280,8 +275,8 @@ namespace Microsoft.AspNet.SignalR.Tests
             {
                 host.Initialize(messageBusType: messageBusType);
 
-                HubConnection hubConnection = CreateHubConnection(host);
-                IHubProxy proxy = hubConnection.CreateHubProxy("ChatHub");
+                var hubConnection = CreateHubConnection(host);
+                var proxy = hubConnection.CreateHubProxy("ChatHub");
 
                 using (hubConnection)
                 {
@@ -315,11 +310,11 @@ namespace Microsoft.AspNet.SignalR.Tests
             {
                 host.Initialize(messageBusType: messageBusType);
 
-                HubConnection hubConnection = CreateHubConnection(host);
+                var hubConnection = CreateHubConnection(host);
 
                 using (hubConnection)
                 {
-                    IHubProxy proxy = hubConnection.CreateHubProxy("chatHub");
+                    var proxy = hubConnection.CreateHubProxy("chatHub");
                     var wh = new ManualResetEvent(false);
 
                     proxy.On("addMessage", data =>
@@ -350,11 +345,11 @@ namespace Microsoft.AspNet.SignalR.Tests
             {
                 host.Initialize(messageBusType: messageBusType);
 
-                HubConnection hubConnection = CreateHubConnection(host);
+                var hubConnection = CreateHubConnection(host);
 
                 using (hubConnection)
                 {
-                    IHubProxy proxy = hubConnection.CreateHubProxy("MyHub2");
+                    var proxy = hubConnection.CreateHubProxy("MyHub2");
 
                     await hubConnection.Start(host.Transport);
                     var ex = Assert.Throws<AggregateException>(() => proxy.InvokeWithTimeout("Send", "hello"));
@@ -426,11 +421,11 @@ namespace Microsoft.AspNet.SignalR.Tests
             {
                 host.Initialize(messageBusType: messageBusType);
 
-                HubConnection hubConnection = CreateHubConnection(host);
+                var hubConnection = CreateHubConnection(host);
 
                 using (hubConnection)
                 {
-                    IHubProxy proxy = hubConnection.CreateHubProxy("ExamineHeadersHub");
+                    var proxy = hubConnection.CreateHubProxy("ExamineHeadersHub");
                     var tcs = new TaskCompletionSource<object>();
 
                     proxy.On("sendHeader", headers =>
@@ -476,12 +471,12 @@ namespace Microsoft.AspNet.SignalR.Tests
             {
                 // Arrange
                 host.Initialize(messageBusType: messageBusType);
-                HubConnection hubConnection = CreateHubConnection(host);
+                var hubConnection = CreateHubConnection(host);
                 var mre = new AsyncManualResetEvent();
 
                 using (hubConnection)
                 {
-                    IHubProxy proxy = hubConnection.CreateHubProxy("ExamineHeadersHub");
+                    var proxy = hubConnection.CreateHubProxy("ExamineHeadersHub");
 
                     proxy.On("sendHeader", headers =>
                     {
@@ -512,28 +507,25 @@ namespace Microsoft.AspNet.SignalR.Tests
             using (var host = CreateHost(hostType, transportType))
             {
                 host.Initialize();
-                HubConnection hubConnection = CreateHubConnection(host);
+                var hubConnection = CreateHubConnection(host);
                 var tcs = new TaskCompletionSource<Exception>();
-                var mre = new AsyncManualResetEvent();
 
                 hubConnection.Error += (ex) =>
                 {
-                    tcs.TrySetResult(ex);
-                    mre.Set();
+                    tcs.TrySetException(ex);
                 };
 
                 using (hubConnection)
                 {
-                    IHubProxy proxy = hubConnection.CreateHubProxy("ClientCallbackHub");
+                    var proxy = hubConnection.CreateHubProxy("ClientCallbackHub");
 
                     proxy.On<string, string>("twoArgsMethod", (arg1, arg2) => { });
 
-                    await hubConnection.Start(host.Transport);
-                    await proxy.Invoke("SendOneArgument");
+                    await hubConnection.Start(host.Transport).OrTimeout();
+                    await proxy.Invoke("SendOneArgument").OrTimeout();
 
-                    Assert.True(await mre.WaitAsync(TimeSpan.FromSeconds(5)));
-                    Assert.IsType(typeof(InvalidOperationException), tcs.Task.Result);
-                    Assert.Equal(((InvalidOperationException)tcs.Task.Result).Message, "A client callback for event twoArgsMethod with 1 argument(s) could not be found");
+                    var ex = await Assert.ThrowsAsync<InvalidOperationException>(() => tcs.Task);
+                    Assert.Equal(ex.Message, "A client callback for event twoArgsMethod with 1 argument(s) could not be found");
                 }
             }
         }
@@ -552,7 +544,7 @@ namespace Microsoft.AspNet.SignalR.Tests
             using (var host = CreateHost(hostType, transportType))
             {
                 host.Initialize();
-                HubConnection hubConnection = CreateHubConnection(host);
+                var hubConnection = CreateHubConnection(host);
                 var mre = new AsyncManualResetEvent();
                 var wh = new AsyncManualResetEvent();
 
@@ -563,7 +555,7 @@ namespace Microsoft.AspNet.SignalR.Tests
 
                 using (hubConnection)
                 {
-                    IHubProxy proxy = hubConnection.CreateHubProxy("ClientCallbackHub");
+                    var proxy = hubConnection.CreateHubProxy("ClientCallbackHub");
 
                     proxy.On("twoArgsMethod", () => { mre.Set(); });
 
@@ -590,7 +582,7 @@ namespace Microsoft.AspNet.SignalR.Tests
             using (var host = CreateHost(hostType, transportType))
             {
                 host.Initialize();
-                HubConnection hubConnection = CreateHubConnection(host);
+                var hubConnection = CreateHubConnection(host);
                 var tcs = new TaskCompletionSource<Exception>();
                 var mre = new AsyncManualResetEvent();
 
@@ -602,7 +594,7 @@ namespace Microsoft.AspNet.SignalR.Tests
 
                 using (hubConnection)
                 {
-                    IHubProxy proxy = hubConnection.CreateHubProxy("ClientCallbackHub");
+                    var proxy = hubConnection.CreateHubProxy("ClientCallbackHub");
 
                     proxy.On<int>("foo", args => { });
 
@@ -628,13 +620,13 @@ namespace Microsoft.AspNet.SignalR.Tests
             using (var host = CreateHost(hostType, transportType))
             {
                 host.Initialize();
-                HubConnection hubConnection = CreateHubConnection(host);
+                var hubConnection = CreateHubConnection(host);
                 var mre = new AsyncManualResetEvent();
 
                 using (hubConnection)
                 {
-                    IHubProxy proxy = hubConnection.CreateHubProxy("EchoHub");
-                    int callbackInvokedCount = 0;
+                    var proxy = hubConnection.CreateHubProxy("EchoHub");
+                    var callbackInvokedCount = 0;
 
                     proxy.On<string>("echo", message =>
                     {
@@ -665,7 +657,7 @@ namespace Microsoft.AspNet.SignalR.Tests
             using (var host = CreateHost(hostType, transportType))
             {
                 host.Initialize();
-                HubConnection hubConnection = CreateHubConnection(host);
+                var hubConnection = CreateHubConnection(host);
 
                 using (hubConnection)
                 {
@@ -687,7 +679,7 @@ namespace Microsoft.AspNet.SignalR.Tests
             using (var host = CreateHost(hostType, transportType))
             {
                 host.Initialize();
-                HubConnection hubConnection = CreateHubConnection(host);
+                var hubConnection = CreateHubConnection(host);
 
                 using (hubConnection)
                 {
@@ -721,8 +713,8 @@ namespace Microsoft.AspNet.SignalR.Tests
             using (var host = CreateHost(hostType, transportType))
             {
                 host.Initialize();
-                HubConnection hubConnection = CreateHubConnection(host);
-                ManualResetEventSlim mre = new ManualResetEventSlim();
+                var hubConnection = CreateHubConnection(host);
+                var mre = new ManualResetEventSlim();
 
                 using (hubConnection)
                 {
