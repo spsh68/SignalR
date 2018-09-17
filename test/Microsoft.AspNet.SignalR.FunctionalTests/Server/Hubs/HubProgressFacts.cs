@@ -13,7 +13,7 @@ namespace Microsoft.AspNet.SignalR.FunctionalTests.Server.Hubs
 {
     public class HubProgressFacts : HostedTest
     {
-        [Theory]
+        [Theory(Skip = "Flaky when run in parallel.")]
         //[InlineData(HostType.IISExpress, TransportType.Websockets, MessageBusType.Default, Skip = "Disabled IIS Express tests because they fail to initialize")]
         //[InlineData(HostType.IISExpress, TransportType.ServerSentEvents, MessageBusType.Default, Skip = "Disabled IIS Express tests because they fail to initialize")]
         //[InlineData(HostType.IISExpress, TransportType.LongPolling, MessageBusType.Default, Skip = "Disabled IIS Express tests because they fail to initialize")]
