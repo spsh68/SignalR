@@ -1,5 +1,5 @@
 # This sets the build number
-name: $(Date:yyyymmdd)-$(Rev:rr)
+name: $(Date:yyyymmdd)$(Rev:.rr)
 
 trigger:
 - master
