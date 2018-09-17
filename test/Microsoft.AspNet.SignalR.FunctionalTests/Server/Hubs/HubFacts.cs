@@ -1189,7 +1189,7 @@ namespace Microsoft.AspNet.SignalR.Tests
                         Name = "David"
                     };
 
-                    var person1 = hub.InvokeWithTimeout<SignalR.Samples.Hubs.DemoHub.DemoHub.Person>("ComplexType", person);
+                    var person1 = await hub.Invoke<SignalR.Samples.Hubs.DemoHub.DemoHub.Person>("ComplexType", person).OrTimeout();
                     var person2 = hub.GetValue<SignalR.Samples.Hubs.DemoHub.DemoHub.Person>("person");
 
                     Assert.NotNull(person1);
