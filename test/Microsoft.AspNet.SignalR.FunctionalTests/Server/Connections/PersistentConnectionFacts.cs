@@ -729,7 +729,7 @@ namespace Microsoft.AspNet.SignalR.Tests
 
         public class Owin : HostedTest
         {
-            [Theory]
+            [Theory(Skip = "Test is flaky")]
             //[InlineData(HostType.IISExpress, TransportType.ServerSentEvents, Skip = "Disabled IIS Express tests because they fail to initialize")]
             //[InlineData(HostType.IISExpress, TransportType.LongPolling, Skip = "Disabled IIS Express tests because they fail to initialize")]
             [InlineData(HostType.HttpListener, TransportType.ServerSentEvents)]
