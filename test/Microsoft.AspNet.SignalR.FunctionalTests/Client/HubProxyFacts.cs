@@ -290,7 +290,7 @@ namespace Microsoft.AspNet.SignalR.Tests
 
                     await hubConnection.Start(host.Transport);
 
-                    proxy.InvokeWithTimeout("Send", "hello");
+                    await proxy.Invoke("Send", "hello").OrTimeout();
 
                     Assert.True(wh.WaitOne(TimeSpan.FromSeconds(10)));
                 }
@@ -325,7 +325,7 @@ namespace Microsoft.AspNet.SignalR.Tests
 
                     await hubConnection.Start(host.Transport);
 
-                    proxy.InvokeWithTimeout("Send", "hello");
+                    await proxy.Invoke("Send", "hello").OrTimeout();
 
                     Assert.True(wh.WaitOne(TimeSpan.FromSeconds(10)));
                 }
@@ -352,7 +352,7 @@ namespace Microsoft.AspNet.SignalR.Tests
                     var proxy = hubConnection.CreateHubProxy("MyHub2");
 
                     await hubConnection.Start(host.Transport);
-                    var ex = Assert.Throws<AggregateException>(() => proxy.InvokeWithTimeout("Send", "hello"));
+                    await Assert.ThrowsAnyAsync<Exception>(() => proxy.Invoke("Send", "hello").OrTimeout());
                 }
             }
         }
