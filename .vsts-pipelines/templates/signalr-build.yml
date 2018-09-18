@@ -29,7 +29,7 @@ phases:
 
   - task: PublishBuildArtifacts@1
     displayName: Upload artifacts
-    condition: and(succeeded(), eq(variables['system.pullrequest.isfork'], false))
+    condition: and(always(), eq(variables['system.pullrequest.isfork'], false))
     inputs:
       pathtoPublish: artifacts/$(BuildConfiguration)/
       artifactName: artifacts-$(BuildConfiguration)
@@ -37,7 +37,7 @@ phases:
 
   - task: PublishBuildArtifacts@1
     displayName: Upload logs
-    condition: and(failed(), eq(variables['system.pullrequest.isfork'], false))
+    condition: and(always(), eq(variables['system.pullrequest.isfork'], false))
     inputs:
       pathtoPublish: artifacts/logs/
       artifactName: logs-$(BuildConfiguration)
