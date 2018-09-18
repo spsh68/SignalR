@@ -8,13 +8,8 @@ phases:
 - phase: Windows
   queue:
     name: ${{ parameters.queueName }}
-    parallel: 2
-    matrix:
-      Release:
-        BuildConfiguration: Release
-      Debug:
-        BuildConfiguration: Debug
   variables:
+    BuildConfiguration: Release
     ${{ insert }}: ${{ parameters.variables }}
   steps:
   - checkout: self
