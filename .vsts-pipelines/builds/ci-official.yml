@@ -14,7 +14,6 @@ phases:
       SignType: real
       TeamName: AspNetCore
       OfficialBuild: true
-      Localize: true
     beforeBuild:
     - task: securedevelopmentteam.vss-secure-development-tools.build-task-policheck.PoliCheck@1
       displayName: 'Run compliance check'
